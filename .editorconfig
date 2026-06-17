@@ -36,6 +36,8 @@ dotnet_diagnostic.IDE0005.severity = warning
 dotnet_diagnostic.CA1727.severity = warning
 # ConfigureAwait desnecessário em ASP.NET Core (não há sync context)
 dotnet_diagnostic.CA2007.severity = none
+# LoggerMessage source-gen é overkill para este worker; log estruturado direto basta
+dotnet_diagnostic.CA1848.severity = none
 
 # ============================================================================
 # C# files
