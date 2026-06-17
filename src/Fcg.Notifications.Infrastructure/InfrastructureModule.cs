@@ -1,5 +1,6 @@
 using Fcg.Notifications.Application.Abstractions;
 using Fcg.Notifications.Infrastructure.Idempotency;
+using Fcg.Notifications.Infrastructure.Messaging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
@@ -18,6 +19,7 @@ public static class InfrastructureModule
             ConnectionMultiplexer.Connect(redisConn)
         );
         services.AddSingleton<IIdempotencyStore, RedisIdempotencyStore>();
+        services.AddMessaging(config); // MassTransit + consumers
         return services;
     }
 }
