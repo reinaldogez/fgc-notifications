@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Fcg.Notifications.Api/Fcg.Notifications.Api.csproj" />
+    <Project Path="src/Fcg.Notifications.Application/Fcg.Notifications.Application.csproj" />
+    <Project Path="src/Fcg.Notifications.Infrastructure/Fcg.Notifications.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Fcg.Notifications.Tests.Integration/Fcg.Notifications.Tests.Integration.csproj" />
+    <Project Path="tests/Fcg.Notifications.Tests.Unit/Fcg.Notifications.Tests.Unit.csproj" />
+  </Folder>
+</Solution>
