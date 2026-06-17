@@ -6,6 +6,9 @@
 
   <ItemGroup>
     <PackageReference Include="Fcg.Contracts" Version="1.1.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.41" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
   </ItemGroup>
 
   <PropertyGroup>
