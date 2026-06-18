@@ -18,9 +18,15 @@ builder.AddObservability(); // Console + enricher sempre; Loki/OTLP só por conf
 WebApplication app = builder.Build();
 
 app.MapHealthChecks("/health/live", new HealthCheckOptions { Predicate = _ => false });
+
+// O ready reflete só o Redis (dependência dura). O check do bus, auto-registrado pelo MassTransit
+// com a tag "ready", fica de fora — o broker é informativo, não bloqueante.
 app.MapHealthChecks(
     "/health/ready",
-    new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") }
+    new HealthCheckOptions { Predicate = check => check.Name == "redis" }
 );
 
 app.Run();
+
+// Expõe o ponto de entrada para o host de teste de integração.
+public partial class Program { }
