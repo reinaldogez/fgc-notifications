@@ -2,6 +2,10 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
 WORKDIR /src
 
+# nao instala git hooks no build: o manifesto de tools e o repositorio git
+# nao fazem parte do contexto do container
+ENV HUSKY=0
+
 COPY ["fcg-notifications.slnx", "./"]
 COPY ["nuget.config", "./"]
 COPY ["src/Fcg.Notifications.Application/Fcg.Notifications.Application.csproj",       "src/Fcg.Notifications.Application/"]
