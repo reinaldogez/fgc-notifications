@@ -327,6 +327,14 @@ dotnet_diagnostic.CA1031.severity = none
 dotnet_diagnostic.CA1873.severity = none
 
 # ============================================================================
+# Handlers de notificação — logs com argumentos triviais (Email/Nome)
+# ============================================================================
+[src/Fcg.Notifications.Application/**/*Handler.cs]
+# A notificação é o próprio log [EMAIL]; os argumentos (command.Email, command.Nome)
+# são acesso a propriedade, sem custo de avaliação — guardar por IsEnabled não agrega.
+dotnet_diagnostic.CA1873.severity = none
+
+# ============================================================================
 # Config do bus de mensageria — registro e topology das lambdas
 # ============================================================================
 [src/Fcg.Notifications.Infrastructure/Messaging/**.cs]
