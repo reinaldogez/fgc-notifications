@@ -26,7 +26,4 @@ app.MapHealthChecks(
     new HealthCheckOptions { Predicate = check => check.Name == "redis" }
 );
 
-app.Run();
-
-// Expõe o ponto de entrada para o host de teste de integração.
-public partial class Program { }
+await app.RunAsync();
