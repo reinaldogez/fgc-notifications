@@ -31,7 +31,64 @@ jobs:
       - run: dotnet restore
       - run: dotnet build --no-restore -c Release
       # Testcontainers usa o Docker já presente no runner para subir RabbitMQ + Redis
-      - run: dotnet test --no-build -c Release --collect:"XPlat Code Coverage"
+      - run: |
+          dotnet test --no-build -c Release \
+            --collect:"XPlat Code Coverage" \
+            --results-directory ./TestResults \
+            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: TestResults/**/coverage.opencover.xml
+
+  # ---------- análise de qualidade (reaproveita a cobertura dos testes) ----------
+  sonar:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read                         # restore do Fcg.Contracts exige token (feed NuGet não é anônimo)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0                     # análise usa git blame para identificar código novo
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - run: |
+          dotnet nuget update source github-fcg \
+            --username ${{ github.actor }} \
+            --password ${{ secrets.GITHUB_TOKEN }} \
+            --store-password-in-clear-text \
+            --configfile nuget.config
+      - run: dotnet restore
+      # baixa a cobertura gerada no job test, sem re-executar os testes
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage
+          path: TestResults
+      - run: dotnet tool install --global dotnet-sonarscanner
+      - name: Iniciar análise
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          dotnet sonarscanner begin \
+            /k:"reinaldogez_fcg-notifications" \
+            /o:"reinaldogez" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.token="$SONAR_TOKEN" \
+            /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" \
+            /d:sonar.coverage.exclusions="**/Program.cs" \
+            /d:sonar.exclusions="**/obj/**,**/bin/**"
+      - run: dotnet build --no-restore --no-incremental -c Release
+      - name: Finalizar análise
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
 
   # ---------- publish da imagem (só na main, após os testes) ----------
   publish:
