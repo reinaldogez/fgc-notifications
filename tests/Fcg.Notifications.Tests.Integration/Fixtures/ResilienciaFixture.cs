@@ -81,7 +81,7 @@ public sealed class ResilienciaFixture : IAsyncLifetime
     }
 
     public List<FakeLogRecord> LogsComToken(string token) =>
-        Logs.GetSnapshot().Where(r => r.Message.Contains(token, StringComparison.Ordinal)).ToList();
+        [.. Logs.GetSnapshot().Where(r => r.Message.Contains(token, StringComparison.Ordinal))];
 
     // Espera o consumer falhar (MassTransit loga a exceção em Error) ou o timeout. O retry curto
     // configurado (3 × 2s) atrasa o fault, então a janela precisa ser folgada.

@@ -108,5 +108,5 @@ public sealed class IntegrationFixture : IAsyncLifetime
     }
 
     public List<FakeLogRecord> LogsComToken(string token) =>
-        Logs.GetSnapshot().Where(r => r.Message.Contains(token, StringComparison.Ordinal)).ToList();
+        [.. Logs.GetSnapshot().Where(r => r.Message.Contains(token, StringComparison.Ordinal))];
 }
