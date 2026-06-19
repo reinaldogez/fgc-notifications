@@ -21,14 +21,19 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-      # autentica o source github-fcg com o GITHUB_TOKEN do runner
-      - run: |
+      # autentica o source github-fcg sem mutar o nuget.config versionado:
+      # a credencial vai numa cópia em RUNNER_TEMP (fora da árvore), nunca no fonte rastreado
+      - name: Restore autenticado
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cp nuget.config "$RUNNER_TEMP/nuget.config"
           dotnet nuget update source github-fcg \
             --username ${{ github.actor }} \
-            --password ${{ secrets.GITHUB_TOKEN }} \
+            --password "$GH_TOKEN" \
             --store-password-in-clear-text \
-            --configfile nuget.config
-      - run: dotnet restore
+            --configfile "$RUNNER_TEMP/nuget.config"
+          dotnet restore --configfile "$RUNNER_TEMP/nuget.config"
       - run: dotnet build --no-restore -c Release
       # Testcontainers usa o Docker já presente no runner para subir RabbitMQ + Redis
       - run: |
@@ -59,13 +64,18 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-      - run: |
+      # mesma credencial fora da árvore: o nuget.config versionado fica intacto durante a análise
+      - name: Restore autenticado
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cp nuget.config "$RUNNER_TEMP/nuget.config"
           dotnet nuget update source github-fcg \
             --username ${{ github.actor }} \
-            --password ${{ secrets.GITHUB_TOKEN }} \
+            --password "$GH_TOKEN" \
             --store-password-in-clear-text \
-            --configfile nuget.config
-      - run: dotnet restore
+            --configfile "$RUNNER_TEMP/nuget.config"
+          dotnet restore --configfile "$RUNNER_TEMP/nuget.config"
       # baixa a cobertura gerada no job test, sem re-executar os testes
       - uses: actions/download-artifact@v4
         with:
