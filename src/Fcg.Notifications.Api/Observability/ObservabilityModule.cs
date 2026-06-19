@@ -11,11 +11,12 @@ namespace Fcg.Notifications.Api.Observability;
 public static class ObservabilityModule
 {
     private const string ServiceName = "Fcg.Notifications.Api";
+    private const string AppLabel = "fcg-notifications";
 
     public static WebApplicationBuilder AddObservability(this WebApplicationBuilder builder)
     {
-        string? lokiUrl = builder.Configuration["Serilog:LokiUrl"];
-        string? otelEndpoint = builder.Configuration["Otel:Endpoint"];
+        string? lokiUrl = builder.Configuration["Loki:Url"];
+        string? otelEndpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"];
 
         // Console e enricher de trace entram sempre; o sink Loki só com URL configurada.
         builder.Host.UseSerilog(
@@ -31,7 +32,10 @@ public static class ObservabilityModule
 
                 if (!string.IsNullOrWhiteSpace(lokiUrl))
                 {
-                    loggerConfig.WriteTo.GrafanaLoki(lokiUrl);
+                    loggerConfig.WriteTo.GrafanaLoki(
+                        lokiUrl,
+                        labels: [new LokiLabel { Key = "app", Value = AppLabel }]
+                    );
                 }
             }
         );

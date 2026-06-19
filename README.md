@@ -145,16 +145,16 @@ docker run --rm -p 8080:8080 \
 | `Redis__Connection` | sim | Conexão do Redis (idempotência) |
 | `RabbitMq__Host` | sim | Host do RabbitMQ |
 | `RabbitMq__Username` / `RabbitMq__Password` | sim | Credenciais do RabbitMQ |
-| `Serilog__LokiUrl` | não | URL do Loki — só então o sink Loki é ligado |
-| `Otel__Endpoint` | não | Endpoint OTLP — só então traces/métricas são exportados |
+| `Loki__Url` | não | URL do Loki — só então o sink Loki é ligado |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | não | Endpoint OTLP — só então traces/métricas são exportados |
 
 ## Observabilidade
 
 Logs no **console** e enricher de `TraceId`/`SpanId` estão **sempre** ativos. Os sinks de rede
 são **opcionais e desacoplados** — entram apenas se o endpoint correspondente estiver configurado:
 
-- **Loki** (logs): ligado só com `Serilog__LokiUrl`.
-- **OTLP** (traces/métricas → Tempo/Prometheus): ligado só com `Otel__Endpoint`.
+- **Loki** (logs): ligado só com `Loki__Url`.
+- **OTLP** (traces/métricas → Tempo/Prometheus): ligado só com `OTEL_EXPORTER_OTLP_ENDPOINT`.
 
 Sem esses endpoints o serviço **sobe limpo**, console-only, sem erros de conexão. O *service name*
 reportado é **`Fcg.Notifications.Api`**.
