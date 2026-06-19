@@ -5,7 +5,7 @@ namespace Fcg.Notifications.Infrastructure.Idempotency;
 
 public class RedisIdempotencyStore(IConnectionMultiplexer redis) : IIdempotencyStore
 {
-    private static readonly TimeSpan _ttl = TimeSpan.FromHours(24); // EX 86400
+    private static readonly TimeSpan s_ttl = TimeSpan.FromHours(24); // EX 86400
 
     public async Task<bool> TryMarkAsync(string messageId, CancellationToken ct)
     {
@@ -15,7 +15,7 @@ public class RedisIdempotencyStore(IConnectionMultiplexer redis) : IIdempotencyS
         return await db.StringSetAsync(
             key: $"notifications:processed:{messageId}",
             value: "1",
-            expiry: _ttl,
+            expiry: s_ttl,
             when: When.NotExists
         );
     }

@@ -10,7 +10,7 @@ namespace Fcg.Notifications.Tests.Integration;
 [Collection("Integration")]
 public class DespachoPorStatusTests(IntegrationFixture fixture)
 {
-    private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(15);
+    private static readonly TimeSpan s_timeout = TimeSpan.FromSeconds(15);
 
     [Fact]
     public async Task DeveDespacharParaConfirmacaoQuandoApproved()
@@ -35,7 +35,7 @@ public class DespachoPorStatusTests(IntegrationFixture fixture)
             CancellationToken.None
         );
 
-        IReadOnlyList<FakeLogRecord> logs = await fixture.EsperarLogsAsync(nomeJogo, 1, Timeout);
+        IReadOnlyList<FakeLogRecord> logs = await fixture.EsperarLogsAsync(nomeJogo, 1, s_timeout);
 
         logs.Should().ContainSingle();
         logs[0].Message.Should().Contain("Confirmação de compra").And.Contain(nomeJogo);
@@ -65,7 +65,7 @@ public class DespachoPorStatusTests(IntegrationFixture fixture)
             CancellationToken.None
         );
 
-        IReadOnlyList<FakeLogRecord> logs = await fixture.EsperarLogsAsync(token, 1, Timeout);
+        IReadOnlyList<FakeLogRecord> logs = await fixture.EsperarLogsAsync(token, 1, s_timeout);
 
         logs.Should().ContainSingle();
         logs[0].Message.Should().Contain("Recusa de compra").And.Contain(motivo);

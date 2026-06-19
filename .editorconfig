@@ -232,16 +232,8 @@ dotnet_naming_rule.public_members_should_be_pascal_case.style = pascal_case_styl
 dotnet_naming_symbols.public_member_symbols.applicable_kinds = property,method,event
 dotnet_naming_symbols.public_member_symbols.applicable_accessibilities = public,internal,protected,protected_internal
 
-# --- Private/protected fields use _camelCase ---------------------------------
-dotnet_naming_rule.private_fields_should_be_underscore_camel.severity = warning
-dotnet_naming_rule.private_fields_should_be_underscore_camel.symbols = private_field_symbols
-dotnet_naming_rule.private_fields_should_be_underscore_camel.style = underscore_camel_style
-
-dotnet_naming_symbols.private_field_symbols.applicable_kinds = field
-dotnet_naming_symbols.private_field_symbols.applicable_accessibilities = private,protected,private_protected
-
-dotnet_naming_style.underscore_camel_style.required_prefix = _
-dotnet_naming_style.underscore_camel_style.capitalization = camel_case
+# A ordem das regras importa: o primeiro symbol que casa vence. Const (mais
+# especifico) -> static -> instancia (mais geral), para nao cair na regra geral.
 
 # --- Constants use PascalCase ------------------------------------------------
 dotnet_naming_rule.constants_should_be_pascal_case.severity = warning
@@ -251,6 +243,29 @@ dotnet_naming_rule.constants_should_be_pascal_case.style = pascal_case_style
 dotnet_naming_symbols.constant_symbols.applicable_kinds = field
 dotnet_naming_symbols.constant_symbols.applicable_accessibilities = *
 dotnet_naming_symbols.constant_symbols.required_modifiers = const
+
+# --- Private/protected STATIC fields use s_camelCase (dotnet/runtime) ---------
+dotnet_naming_rule.private_static_fields_should_be_s_camel.severity = warning
+dotnet_naming_rule.private_static_fields_should_be_s_camel.symbols = private_static_field_symbols
+dotnet_naming_rule.private_static_fields_should_be_s_camel.style = s_camel_style
+
+dotnet_naming_symbols.private_static_field_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_static_field_symbols.applicable_accessibilities = private,protected,private_protected
+dotnet_naming_symbols.private_static_field_symbols.required_modifiers = static
+
+dotnet_naming_style.s_camel_style.required_prefix = s_
+dotnet_naming_style.s_camel_style.capitalization = camel_case
+
+# --- Private/protected INSTANCE fields use _camelCase ------------------------
+dotnet_naming_rule.private_fields_should_be_underscore_camel.severity = warning
+dotnet_naming_rule.private_fields_should_be_underscore_camel.symbols = private_field_symbols
+dotnet_naming_rule.private_fields_should_be_underscore_camel.style = underscore_camel_style
+
+dotnet_naming_symbols.private_field_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_field_symbols.applicable_accessibilities = private,protected,private_protected
+
+dotnet_naming_style.underscore_camel_style.required_prefix = _
+dotnet_naming_style.underscore_camel_style.capitalization = camel_case
 
 # --- Parameters and locals use camelCase -------------------------------------
 dotnet_naming_rule.parameters_should_be_camel_case.severity = warning

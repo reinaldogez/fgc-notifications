@@ -9,7 +9,7 @@ namespace Fcg.Notifications.Tests.Integration;
 [Collection("Integration")]
 public class IdempotenciaTests(IntegrationFixture fixture)
 {
-    private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(15);
+    private static readonly TimeSpan s_timeout = TimeSpan.FromSeconds(15);
 
     [Fact]
     public async Task DeveProcessarMensagemNovaUmaVez()
@@ -28,7 +28,7 @@ public class IdempotenciaTests(IntegrationFixture fixture)
             CancellationToken.None
         );
 
-        IReadOnlyList<FakeLogRecord> logs = await fixture.EsperarLogsAsync(token, 1, Timeout);
+        IReadOnlyList<FakeLogRecord> logs = await fixture.EsperarLogsAsync(token, 1, s_timeout);
 
         logs.Should().ContainSingle();
         logs[0].Message.Should().StartWith("[EMAIL]").And.Contain("Boas-vindas");
@@ -58,7 +58,7 @@ public class IdempotenciaTests(IntegrationFixture fixture)
             CancellationToken.None
         );
 
-        await fixture.EsperarLogsAsync(token, 1, Timeout);
+        await fixture.EsperarLogsAsync(token, 1, s_timeout);
         // Carência para garantir que a segunda entrega, se fosse processada, já teria logado.
         await Task.Delay(TimeSpan.FromSeconds(2));
 
